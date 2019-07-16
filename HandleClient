@@ -1,0 +1,158 @@
+package mathserver;
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/**
+ *
+ * @author nikolaosgp
+ */
+public class HandleClient extends Thread{
+    Socket socket;
+    BufferedReader in ;
+    PrintWriter out;
+    List<Integer> iList;
+    List<Double> dList;
+    Matcher mat;
+    Pattern pat;
+    String input;
+    public HandleClient(Socket socket){
+        this.socket = socket;
+        this.iList =  new ArrayList<>();
+        this.dList = new ArrayList<>();
+        mat = null;
+        pat = null;
+    }
+    public void run(){
+        
+        try{
+            in =  new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(),true );
+            input = in.readLine();
+            if(isDouble() == true){
+                handleDoubles();
+            }
+            else{
+                handleIntegers();
+            }
+        }
+        catch(IOException ioe){
+            System.out.println("Error in creating I/O streams");
+        }
+    }// end of run method
+    boolean isDouble() throws IOException{
+        return input.contains(".");
+    }
+    private  void handleIntegers() throws IOException{
+             String integerExpression = "(-|\\+|\\s*)?\\d\\d*";
+             String signPattern = "(\\+|-|\\*|/)";
+            
+             pat = Pattern.compile(integerExpression);
+             mat = pat.matcher(input);
+             while(mat.find()){
+                 int start = mat.start();
+                 int end = mat.end();
+                 String t = input.substring(start, end);
+                 iList.add(Integer.valueOf(t));
+             }
+              if(iList.size()==1){
+                 out.println(iList.get(0));
+             }
+             pat = Pattern.compile(signPattern);
+             mat = pat.matcher(input);
+             String sign="";
+             while(mat.find()){
+                 sign = input.substring(mat.start(),mat.end());
+             }
+             int ret;
+             
+             if(sign.contains("+")){
+                ret =iList.get(0)+iList.get(1);
+                out.println("The sum is: "+ret);
+            }
+            else if(sign.contains("*")){
+                ret = iList.get(0)*iList.get(1);
+                out.println("The multiplication is: "+ret);
+            }
+            else if(sign.contains("/")){
+                if(iList.get(1)==0){
+                    out.println("Error.Division with zero.");
+                    }
+                else{
+                    ret = iList.get(0)/iList.get(1);
+                    out.println("The division is: "+ret);
+                }
+            }
+            else if(sign.contains("-")){
+                ret = iList.get(0)-iList.get(1);
+                out.println("The substraction is: "+ret);
+            }
+            else{
+                out.println("The almost supreme server,calculates the 4 operation.");   
+            }
+            
+    }
+   
+    private void handleDoubles() throws IOException{
+             String floatNumberPattern = "[+-]?\\d+(\\.\\d+)?";
+             String signPattern = "(\\+|-|\\*|/)";
+             
+             pat = Pattern.compile(floatNumberPattern);
+             mat = pat.matcher(input);
+             while(mat.find()){
+                 int start = mat.start();
+                 int end = mat.end();
+                 String t = input.substring(start, end);
+                 dList.add(Double.valueOf(t));
+             }
+             if(dList.size()==1){
+                 out.println(dList.get(0));
+             }
+             pat = Pattern.compile(signPattern);
+             mat = pat.matcher(input);
+             String sign="";
+             
+             while(mat.find()){
+                 sign = input.substring(mat.start(),mat.end());
+             }
+             
+            double ret;
+             
+            if(sign.contains("+")){
+                ret =dList.get(0) + dList.get(1);
+                out.println("The sum is: "+ret);
+            }
+            else if(sign.contains("*")){
+                ret = dList.get(0)*dList.get(1);
+                out.println("The multiplication is: "+ret);
+            }
+            else if(sign.contains("/")){
+                if(dList.get(1)==0){
+                    out.println("Error.Division with zero.");
+                    }
+                else{
+                    ret = dList.get(0)/dList.get(1);
+                    out.println("The division is: "+ret);
+                }
+            }
+            else if(sign.contains("-")){
+                ret = dList.get(0)-dList.get(1);
+                out.println("The substraction is: "+ret);
+            }
+            else{
+                out.println("The almost supreme programm calculates the 4 operation.");   
+            }
+    }
+    
+}
