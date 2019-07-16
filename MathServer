@@ -1,53 +1,42 @@
-package mathclient;
+package mathserver;
 
 /**
  *
  * @author nikolaosgp
  */
-import java.net.*;
+
 import java.io.*;
+import java.net.*;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-public class MathClient {
-        String serverHostname = new String ("127.0.0.1");
-        Socket echoSocket = null;
-        PrintWriter out = null;
-        BufferedReader in = null;
-        
-        public MathClient(){
-            
-        }
-        public void start() throws IOException{
-         while(true){
-         echoSocket = new Socket(serverHostname, 1234);
-         out = new PrintWriter(echoSocket.getOutputStream(), true);
-         in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-           
-	 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-	 String userInput;
-         
-         System.out.print ("input: ");
-	 userInput = stdIn.readLine();
-	 out.println(userInput);
-	 System.out.println( in.readLine());
-      
-	  
-         in.close();
-         out.close();
-         echoSocket.close();
-         }
-     }
+
+public class MathServer {
+
+    /**
+     * @param args the command line arguments
+     */
+
+   
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
 
-      while(true){
-          MathClient c = new MathClient();
-          c.start();
-      }
-        
-    }// end of main
-        
+        ServerSocket  socket = null;
+        Socket connection = null;
+
+        int port = 1234;       
+        socket = new ServerSocket(port);
+        System.out.println("Socket created on port: "+port);
+        while(true){
+            connection = socket.accept();
+            System.out.println("Waiting for connections....");
+            System.out.println("Accepted new connection on port "+connection.getPort()+".\nClient's IP is: "+connection.getInetAddress().getHostAddress());
+            HandleClient client = new HandleClient(connection);
+            client.start();    
+        }//end while true
+       
+    }
     
+   
 }
