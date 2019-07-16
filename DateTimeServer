@@ -1,37 +1,57 @@
-package datetimeclient;
+package datetimeserver;
 
 /**
  *
  * @author nikolaosgp
  */
-import java.net.Socket;
-import java.net.InetAddress;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.UnknownHostException;
-public class DateTimeClient {
+import java.io.*;
+import java.net.*;
+import java.util.Date;
+public class DateTimeServer {
 
     /**
      * @param args the command line arguments
      */
-    
-    private Socket socket;
-    private String address;
+    private ServerSocket socketServer;
+    private Socket connection;
+    private final static int port =1234;
     private BufferedReader in;
     private PrintWriter out;
-    private static final int port = 1234;
     
-    public DateTimeClient() throws IOException,UnknownHostException{
-        
-        address = new String("127.0.0.1");
-        socket = new Socket(address,port);
-        System.out.println("Connected on server: "+address+" on port: "+port+".");
-        in = new BufferedReader( new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream());
-  
+    public DateTimeServer() throws IOException{
+        socketServer = new ServerSocket(port);
+        System.out.println("Connected on port :"+port);
     }
+    
+    public void start() throws IOException{
+        
+        try{
+            connection = socketServer.accept();
+            System.out.println("Waiting for connections....");
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            out = new PrintWriter(connection.getOutputStream());
+            Date date = new Date();
+            String message = date.toString();
+            out.println(message);  
+        }
+        finally{
+            out.close();
+            in.close();
+            connection.close();
+            socketServer.close();
+        }
+    }
+    
+    public static void main(String[] args) throws IOException{
+        // TODO code application logic here
+        while(true){
+            DateTimeServer server = new DateTimeServer();
+            server.start();
+        }
+    }
+    
+}
+
     public void start() throws UnknownHostException,IOException{
         
         try{   
