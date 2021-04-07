@@ -1,0 +1,9 @@
+public static String reverseWord(String str)
+    {
+        // Reverse the string str
+        StringBuilder input = new StringBuilder();
+        input.append(str);
+        input.reverse();
+        return input.toString();
+    }
+}
