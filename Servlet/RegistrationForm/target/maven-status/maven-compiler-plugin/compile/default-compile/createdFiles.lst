@@ -1,0 +1,9 @@
+com/mycompany/registrationform/resources/JakartaEE10Resource.class
+com/mycompany/registrationform/JakartaRestConfiguration.class
+com/mycompany/registrationform/User.class
+com/mycompany/registrationform/Delete.class
+com/mycompany/registrationform/UserDAO.class
+com/mycompany/registrationform/Save.class
+com/mycompany/registrationform/ShowAllUsers.class
+com/mycompany/registrationform/Login.class
+com/mycompany/registrationform/UpdateUser.class
