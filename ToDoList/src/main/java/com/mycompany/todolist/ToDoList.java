@@ -81,8 +81,8 @@
             int taskNumber = Integer.parseInt(scanner.nextLine()) -1;
             if(taskNumber >= 0 && taskNumber < tasks.size()){
                 Task task = tasks.get(taskNumber);
-                tasks.set(taskNumber, new Task(task.description(), true));
-                System.out.println("Task '" + task.description() + "' marked as complete.\n");
+                tasks.set(taskNumber, new Task(task.getDescription(), true));
+                System.out.println("Task '" + task.getDescription() + "' marked as complete.\n");
             } else {
               System.out.println("Invalid task number.\n");
             }
